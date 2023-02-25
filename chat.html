@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-database.js"></script>
+    <script>
+        if (user) {
+            var myName = user.displayName;
+            var firebaseConfig = {
+                apiKey: "AIzaSyAeXkvSExgSBk-uTDfmoeq0QcYRMa3HoQw",
+
+                authDomain: "spotlight-chat-ro-om.firebaseapp.com",
+
+                databaseURL: "https://spotlight-chat-ro-om-default-rtdb.firebaseio.com",
+
+                projectId: "spotlight-chat-ro-om",
+
+                storageBucket: "spotlight-chat-ro-om.appspot.com",
+
+                messagingSenderId: "369813542379",
+
+                appId: "1:369813542379:web:dc04a3996b1011467835ae"
+
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+        } else {
+            window.location = "auth.html";
+        }
+        // Your web app's Firebase configuration
+
+        // firebase.database().ref("messages").on("child_removed", function (snapshot) {
+        // document.getElementById("message-" + snapshot.key).innerHTML = "This message has been deleted";
+        // });
+        // function deleteMessage(self) {
+        // var messageId = self.getAttribute("data-id");
+        // firebase.database().ref("messages").child(messageId).remove();
+        // }
+        // function sendMessage() {
+        // var message = document.getElementById("message").value;
+        // firebase.database().ref("messages").push().set({
+        // "message": message,
+        // "sender": myName
+        // });
+        // return false;
+        // }
+        var myName = prompt("Enter your name");
+        function sendMessage() {
+            var message = document.getElementById("messaage").value;
+            firebase.database().ref("messages").push().set(
+                {
+                    "sender": myName,
+                    "message": message
+                }
+            );
+            return false;
+        }
+        firebase.database().ref("messages").on("child_added", function (snapshot) {
+            var html = "";
+            html += "<li>";
+            html += snapshot.val().sender + ": " + snapshot.val().message;
+            html += "</li>";
+            document.getElementById("messages").innerHTML += html;
+        }); 
+    </script>
+    <form onsubmit="return sendMessage();">
+        <input id="messaage" placeholder="Enter message" autocomplete="off">
+        <input type="submit">
+    </form>
+    <ul id="messages"></ul>
+</body>
+
+</html>
